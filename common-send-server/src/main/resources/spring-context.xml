@@ -76,4 +76,5 @@
     </bean>
     
     <import resource="classpath:spring-remote.xml" />
+    <import resource="classpath:spring-redis.xml" />
 </beans>
