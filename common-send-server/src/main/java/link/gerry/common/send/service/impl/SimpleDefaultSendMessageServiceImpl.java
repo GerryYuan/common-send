@@ -5,10 +5,14 @@ import java.io.UnsupportedEncodingException;
 import link.gerry.common.send.entity.CommonSendMessage;
 import link.gerry.common.send.result.SmsResult;
 import link.gerry.common.send.result.SmsResultForJYT;
+import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.gerry.common.framework.constants.CommonConstants;
+import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.utils.EmptyUtils;
 import com.gerry.common.framework.utils.xml.JaxbXmlUtils;
 
 /**
@@ -19,6 +23,7 @@ import com.gerry.common.framework.utils.xml.JaxbXmlUtils;
  * @version 1.0, 2016年8月4日
  * @since com.nise 1.0.0
  */
+@Slf4j
 public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageService<SmsResultForJYT> {
 
 	@Value("${sms.juyitong.userId}")
@@ -33,6 +38,9 @@ public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageServ
 	@Value("${sms.juyitong.url}")
 	private String url;
 
+	@Autowired
+	private RedisManager<String, String> redisManager;
+	
 	@Override
 	public String buildUrl(String phone, String content) throws UnsupportedEncodingException {
 		StringBuilder sb = new StringBuilder(url).append(CommonConstants.SYMBOL_AMPERSAND).append("userid=" + userId);
@@ -58,6 +66,16 @@ public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageServ
 			commonSendMessage.setStatus((byte) SmsResult.Status.FAIL.getCode());
 		}
 		return commonSendMessage;
+	}
+
+	@Override
+	public boolean canSend(String phone, String key) {
+		String code = redisManager.getObjectByKey(phone + key);
+		if (EmptyUtils.isNotEmpty(code)) {
+			log.error("手机号[" + phone + "]验证的模板[" + key + "]的验证码已存在");
+			return false;
+		}
+		return true;
 	}
 
 }

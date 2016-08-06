@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import com.gerry.common.framework.constants.send.SendConstants;
+import com.gerry.common.framework.helper.ViewModelHelper;
+import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.result.ViewModelResult;
 import com.gerry.common.framework.utils.EmptyUtils;
 
 @Slf4j
@@ -27,6 +30,9 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private RedisManager<String, String> redisManager;
 
 	@Autowired
 	private CommonSendMessageService commonSendMessageService;
@@ -63,8 +69,20 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 	}
 
 	@Override
-	public boolean checkSmsCode(String phone, String smsCode, String key) {
-		return false;
+	public ViewModelResult<?> checkSmsCode(String phone, String smsCode, String key) {
+		String code = redisManager.getObjectByKey(phone + key);
+		if (EmptyUtils.isEmpty(code)) {
+			String message = "手机号[" + phone + "]验证的验证码[" + smsCode + "]不存在或已过去";
+			log.error(message);
+			return ViewModelHelper.NOViewModelResult(message);
+		}
+		if (!code.equals(smsCode)) {
+			String message = "手机号[" + phone + "]验证的验证码[" + smsCode + "]错误";
+			log.error(message);
+			return ViewModelHelper.NOViewModelResult(message);
+		}
+		redisManager.deleteObjectByKey(phone + key);
+		return ViewModelHelper.OKViewModelResult();
 	}
 
 	protected void saveMessageContent(CommonSendMessage commonSendMessage) {

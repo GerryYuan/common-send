@@ -2,6 +2,8 @@ package link.gerry.common.send.service;
 
 import org.springframework.scheduling.annotation.Async;
 
+import com.gerry.common.framework.result.ViewModelResult;
+
 public interface SendMessageService<T> {
 
 	/**
@@ -24,6 +26,15 @@ public interface SendMessageService<T> {
 	 * @return
 	 * @see
 	 */
-	boolean checkSmsCode(String phone, String smsCode, String key);
+	ViewModelResult<?> checkSmsCode(String phone, String smsCode, String key);
 
+	/**
+	 * 可以发送验证码
+	 * 
+	 * @param phone
+	 * @param key
+	 * @return
+	 * @see
+	 */
+	boolean canSend(String phone, String key);
 }
