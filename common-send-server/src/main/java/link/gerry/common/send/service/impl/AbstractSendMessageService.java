@@ -39,7 +39,7 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 
 	@Override
 	public void sendSms(String phone, String key) throws Exception {
-		SendConstants sc = CommonSendMesageHelper.generationSmsCode(phone, key);
+		SendConstants sc = CommonSendMesageHelper.generationSmsCode(phone, key, redisManager);
 		String templetMessage = InitializationSendProperties.getValue(sc.getSendMessageKey());
 		if (EmptyUtils.isEmpty(templetMessage)) {
 			log.warn("当前短信模板[" + sc.getSendMessageKey() + "]不支持");
@@ -94,4 +94,5 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 	public abstract T convertResponse(String response) throws Exception;
 
 	public abstract CommonSendMessage convertToCommonSendMessage(T t) throws Exception;
+
 }

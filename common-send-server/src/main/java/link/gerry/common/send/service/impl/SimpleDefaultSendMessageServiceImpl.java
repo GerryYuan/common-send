@@ -40,13 +40,13 @@ public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageServ
 
 	@Autowired
 	private RedisManager<String, String> redisManager;
-	
+
 	@Override
 	public String buildUrl(String phone, String content) throws UnsupportedEncodingException {
 		StringBuilder sb = new StringBuilder(url).append(CommonConstants.SYMBOL_AMPERSAND).append("userid=" + userId);
 		sb.append(CommonConstants.SYMBOL_AMPERSAND).append("account=" + account).append(CommonConstants.SYMBOL_AMPERSAND).append("password=" + password).append(CommonConstants.SYMBOL_AMPERSAND)
-				.append("mobile=" + phone).append(CommonConstants.SYMBOL_AMPERSAND).append("content=" + content)
-				.append(CommonConstants.SYMBOL_AMPERSAND).append("sendTime=").append(CommonConstants.SYMBOL_AMPERSAND).append("extno=");
+				.append("mobile=" + phone).append(CommonConstants.SYMBOL_AMPERSAND).append("content=" + content).append(CommonConstants.SYMBOL_AMPERSAND).append("sendTime=")
+				.append(CommonConstants.SYMBOL_AMPERSAND).append("extno=");
 		return sb.toString();
 	}
 
