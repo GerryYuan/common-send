@@ -12,8 +12,6 @@
     http://www.springframework.org/schema/mvc 
     http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-	<context:property-placeholder location="file:./conf/*.properties" file-encoding="UTF-8" />
-
 	<bean name="sendMessageServiceInvoker" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service" ref="sendMessageService" />
 		<property name="serviceInterface" value="link.gerry.common.send.service.SendMessageService" />

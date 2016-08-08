@@ -1,7 +1,0 @@
-<mail-configs from="" replyTo="">
-	<mail-config templateId="demo-mail" templatePath="/template.vm">
-		<from>yuanguohua@dhqjr.com</from>
-		<subject>邮件主题测试</subject>
-		<replyTo></replyTo>
-	</mail-config>
-</mail-configs>
