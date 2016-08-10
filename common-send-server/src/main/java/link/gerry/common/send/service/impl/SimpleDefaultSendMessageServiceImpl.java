@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.gerry.common.framework.constants.CommonConstants;
-import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.redis.RedisKVCache;
 import com.gerry.common.framework.utils.EmptyUtils;
 import com.gerry.common.framework.utils.xml.JaxbXmlUtils;
 
@@ -39,7 +39,7 @@ public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageServ
 	private String url;
 
 	@Autowired
-	private RedisManager<String, String> redisManager;
+	private RedisKVCache<String, String> redisKVCache;
 
 	@Override
 	public String buildUrl(String phone, String content) throws UnsupportedEncodingException {
@@ -70,7 +70,7 @@ public class SimpleDefaultSendMessageServiceImpl extends AbstractSendMessageServ
 
 	@Override
 	public boolean canSend(String phone, String key) {
-		String code = redisManager.getObjectByKey(phone + key);
+		String code = redisKVCache.getObjectByKey(phone + key);
 		if (EmptyUtils.isNotEmpty(code)) {
 			log.error("手机号[" + phone + "]验证的模板[" + key + "]的验证码已存在");
 			return false;

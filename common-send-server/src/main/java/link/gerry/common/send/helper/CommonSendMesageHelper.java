@@ -1,7 +1,7 @@
 package link.gerry.common.send.helper;
 
 import com.gerry.common.framework.constants.send.SendConstants;
-import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.redis.RedisKVCache;
 import com.gerry.common.framework.utils.GenerationRandomUtils;
 
 /**
@@ -14,13 +14,13 @@ import com.gerry.common.framework.utils.GenerationRandomUtils;
  */
 public class CommonSendMesageHelper {
 
-	public static SendConstants generationSmsCode(String phone, String key,RedisManager<String, String> redisManager) {
+	public static SendConstants generationSmsCode(String phone, String key,RedisKVCache<String, String> redisKVCache) {
 		SendConstants sc = new SendConstants();
 		sc.setPhone(phone);
 		sc.setSendMessageKey(key);
 		String code = GenerationRandomUtils.createMobileVerifyCode(6);
 		sc.setParams(new String[] { code });
-		redisManager.saveObjectBySeconds(phone + key, code);
+		redisKVCache.saveObjectBySeconds(phone + key, code);
 		return sc;
 	}
 

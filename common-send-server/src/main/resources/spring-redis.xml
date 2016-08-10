@@ -33,7 +33,7 @@
         <property name="connectionFactory" ref="jedisConnectionFactory" />  
     </bean> 
     
-    <bean class="com.gerry.common.framework.redis.RedisManager">
+    <bean class="com.gerry.common.framework.redis.StringRedisKVCacheOperate">
     	<property name="redisTemplate" ref="redisTemplate"/>
     </bean>
     

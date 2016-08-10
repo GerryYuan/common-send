@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.gerry.common.framework.constants.send.SendConstants;
 import com.gerry.common.framework.helper.ViewModelHelper;
-import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.redis.RedisKVCache;
 import com.gerry.common.framework.result.ViewModelResult;
 import com.gerry.common.framework.utils.EmptyUtils;
 
@@ -32,14 +32,14 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private RedisManager<String, String> redisManager;
+	private RedisKVCache<String, String> redisKVCache;
 
 	@Autowired
 	private CommonSendMessageService commonSendMessageService;
 
 	@Override
 	public void sendSms(String phone, String key) throws Exception {
-		SendConstants sc = CommonSendMesageHelper.generationSmsCode(phone, key, redisManager);
+		SendConstants sc = CommonSendMesageHelper.generationSmsCode(phone, key, redisKVCache);
 		String templetMessage = InitializationSendProperties.getValue(sc.getSendMessageKey());
 		if (EmptyUtils.isEmpty(templetMessage)) {
 			log.warn("当前短信模板[" + sc.getSendMessageKey() + "]不支持");
@@ -70,7 +70,7 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 
 	@Override
 	public ViewModelResult<?> checkSmsCode(String phone, String smsCode, String key) {
-		String code = redisManager.getObjectByKey(phone + key);
+		String code = redisKVCache.getObjectByKey(phone + key);
 		if (EmptyUtils.isEmpty(code)) {
 			String message = "手机号[" + phone + "]验证的验证码[" + smsCode + "]不存在或已过去";
 			log.error(message);
@@ -81,7 +81,7 @@ public abstract class AbstractSendMessageService<T> implements SendMessageServic
 			log.error(message);
 			return ViewModelHelper.NOViewModelResult(message);
 		}
-		redisManager.deleteObjectByKey(phone + key);
+		redisKVCache.deleteObjectByKey(phone + key);
 		return ViewModelHelper.OKViewModelResult();
 	}
 

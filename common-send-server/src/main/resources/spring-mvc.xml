@@ -22,7 +22,7 @@
         </property>
         <!-- 这边添加之后默认给date类型的字段转换成string了 -->
         <!-- <property name="filter">
-            <bean class="com.nise.common.framework.fastjson.filters.NiseValueFilter"/>
+            <bean class="com.gerry.common.framework.fastjson.filters.FastJsonValueFilter"/>
         </property> -->
     </bean>
     
